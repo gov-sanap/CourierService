@@ -17,7 +17,7 @@ namespace DeliveryCostEstimatorCLI
         public static IServiceProvider ServiceProvider;
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Welcome to Everest Engineering");
             Initialize();
             var deliveryCostCalculator = GetDeliveryCostCalculator();
 
