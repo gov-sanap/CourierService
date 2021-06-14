@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CourierService\CourierService.csproj" />
-    <ProjectReference Include="..\..\src\DeliveryCostEstimatorCLI\DeliveryCostEstimatorCLI.csproj" />
+    <ProjectReference Include="..\..\src\DeliveryCostEstimatorCLI\DeliveryCostAndTimeEstimatorCLI.csproj" />
   </ItemGroup>
 
 </Project>

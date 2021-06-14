@@ -42,7 +42,7 @@ namespace CourierService
             if (!string.IsNullOrEmpty(order.OfferCode))
             {
                 Offer offer = _offerStore.GetOffer(order.OfferCode);
-                if (offer.IsApplicable(order))
+                if (offer != null && offer.IsApplicable(order))
                 {
                     return offer.GetDiscountAmmount(deliveryCost);
                 }

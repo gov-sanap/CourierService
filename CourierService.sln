@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourierService.Fixture", "tests\CourierService.Fixture\CourierService.Fixture.csproj", "{96C50F6E-85F3-4A5D-9F04-A79EE67C849B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierService.Fixture", "tests\CourierService.Fixture\CourierService.Fixture.csproj", "{96C50F6E-85F3-4A5D-9F04-A79EE67C849B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E8569C10-0D2B-4451-812D-D19DE5475623}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{27CBE7AF-BDD7-4A8E-9FAF-DD1ACEC96B84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourierService", "src\CourierService\CourierService.csproj", "{E48D1FC0-01AC-4153-860C-EAE270A3AE51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierService", "src\CourierService\CourierService.csproj", "{E48D1FC0-01AC-4153-860C-EAE270A3AE51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryCostEstimatorCLI", "src\DeliveryCostEstimatorCLI\DeliveryCostEstimatorCLI.csproj", "{7C17BDAA-CD21-48C4-85CE-6AD6BCB1CDE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryCostAndTimeEstimatorCLI", "src\DeliveryCostEstimatorCLI\DeliveryCostAndTimeEstimatorCLI.csproj", "{7C17BDAA-CD21-48C4-85CE-6AD6BCB1CDE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
