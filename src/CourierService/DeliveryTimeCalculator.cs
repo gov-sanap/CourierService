@@ -149,11 +149,10 @@ namespace CourierService
             {
                 return;
             }
-            // For every index we have two options,
-            // 1.. Either we select it, means put true in used[] and make currLen+1
+
             used[start] = true;
             SubsetsOfGivenLengthWithTotalWeightsLessThanMaxWeight(orders, maxWeight, sizeOfSubset, start + 1, currentLength + 1, used);
-            // 2.. OR we dont select it, means put false in used[] and dont increase
+
             used[start] = false;
             SubsetsOfGivenLengthWithTotalWeightsLessThanMaxWeight(orders, maxWeight, sizeOfSubset, start + 1, currentLength, used);
         }
