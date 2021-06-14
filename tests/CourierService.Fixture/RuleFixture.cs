@@ -15,7 +15,11 @@ namespace CourierService.Fixture
         [InlineData("DistanceInKM", OperatorType.LessThan, "123", true)]
         [InlineData("DistanceInKM", OperatorType.LessThanEqual, "100", true)]
         [InlineData("DistanceInKM", OperatorType.GreaterThanEqual, "100", true)]
-        public void Calculate_Should_Return_ZeroTotalAmmount_When_No_Object_Is_Passed(string key, OperatorType operatorType, string value, bool result)
+        [InlineData("Package.WeightInKG", OperatorType.Equal, "123", false)]
+        [InlineData("Package.WeightInKG", OperatorType.LessThan, "123", false)]
+        [InlineData("Package.WeightInKG", OperatorType.LessThanEqual, "175", true)]
+        [InlineData("Package.WeightInKG", OperatorType.GreaterThanEqual, "100", true)]
+        public void Qualify_Should_Return_True_If_Rule_Is_True(string key, OperatorType operatorType, string value, bool result)
         {
             Rule rule = new Rule()
             {
