@@ -30,18 +30,33 @@ namespace DeliveryCostEstimatorCLI
                 int numberOfPackages = int.Parse(line1Values[1]);
 
                 List<Order> orders = GetOrders(numberOfPackages);
-                foreach(var order in orders)
+
+                Console.WriteLine("Enter the no_of_vehicles max_speed max_carriable_weight as space seperated values.");
+                var valuesForTimeCalculation = Console.ReadLine().Split(' ');
+                if(valuesForTimeCalculation.Length == 3)
                 {
-                    var request = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(order, baseDeliveryCost);
-                    var deliveryCostCalculatorRS = deliveryCostCalculator.Calculate(request);
-                    DisplayDetails(deliveryCostCalculatorRS);
+                    var deliveryTimeCalculatorRQ = new DeliveryTimeCalculatorRQ
+                    {
+                        NumberOfVehicles = int.Parse(valuesForTimeCalculation[0]),
+                        MaxSpeed = double.Parse(valuesForTimeCalculation[1]),
+                        MaxCarriableWeight = double.Parse(valuesForTimeCalculation[2])
+                    };
+
+                    var deliveryTimeCalculatorRS = new DeliveryTimeCalculator().Calculate(deliveryTimeCalculatorRQ);
+
+                    foreach (var orderWithDeliveryTime in deliveryTimeCalculatorRS.OrdersWithDeliveryTime)
+                    {
+                        var request = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(orderWithDeliveryTime.Order, baseDeliveryCost);
+                        var deliveryCostCalculatorRS = deliveryCostCalculator.Calculate(request);
+                        DisplayDetails(deliveryCostCalculatorRS, orderWithDeliveryTime.DeliveryTime);
+                    }
                 }
             }
         }
 
-        private static void DisplayDetails(DeliveryCostCalculatorRS response)
+        private static void DisplayDetails(DeliveryCostCalculatorRS response, double deliveryTime)
         {
-            Console.WriteLine($"{response.Order.Package.Id} {response.DiscountAmmount} {response.TotalAmmount}");
+            Console.WriteLine($"{response.Order.Package.Id} {response.DiscountAmmount} {response.TotalAmmount} {deliveryTime}");
         }
 
         private static List<Order> GetOrders(int numberOfPackages)
