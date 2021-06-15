@@ -13,38 +13,48 @@ namespace DeliveryCostEstimatorCLI
 {
     public class Program
     {
-        public static IConfigurationRoot ConfigurationRoot;
-        public static IServiceProvider ServiceProvider;
+        private static IConfigurationRoot ConfigurationRoot;
+        private static IServiceProvider ServiceProvider;
+        private static double _baseDeliveryCost;
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Everest Engineering");
             Initialize();
             var deliveryCostCalculator = GetDeliveryCostCalculator();
 
+            var deliveryTimeCalculatorRQ = GetInputsFromUser();
+            var deliveryTimeCalculatorRS = new DeliveryTimeCalculator().Calculate(deliveryTimeCalculatorRQ);
+
+            if(deliveryTimeCalculatorRS != null)
+            {
+                foreach (var orderWithDeliveryTime in deliveryTimeCalculatorRS.OrdersWithDeliveryTime)
+                {
+                    var request = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(orderWithDeliveryTime.Order, _baseDeliveryCost);
+                    var deliveryCostCalculatorRS = deliveryCostCalculator.Calculate(request);
+                    DisplayDetails(deliveryCostCalculatorRS, orderWithDeliveryTime.DeliveryTime);
+                }
+            }
+            Console.ReadKey();
+        }
+
+        private static DeliveryTimeCalculatorRQ GetInputsFromUser()
+        {
+            DeliveryTimeCalculatorRQ deliveryTimeCalculatorRQ = null;
             Console.WriteLine("Enter the base_delivery_cost and no_of_packges as space seperated values.");
             var line1 = Console.ReadLine();
             var line1Values = line1.Split(' ');
-            if(line1Values.Length == 2)
+            if (line1Values.Length == 2)
             {
-                double baseDeliveryCost = double.Parse(line1Values[0]);
-                int numberOfPackages = int.Parse(line1Values[1]);
+                _baseDeliveryCost = double.Parse(line1Values[0]);
+                var numberOfPackages = int.Parse(line1Values[1]);
 
                 List<Order> orders = GetOrders(numberOfPackages);
 
                 Console.WriteLine("Enter the no_of_vehicles max_speed max_carriable_weight as space seperated values.");
                 var valuesForTimeCalculation = Console.ReadLine().Split(' ');
-                if(valuesForTimeCalculation.Length == 3)
+                if (valuesForTimeCalculation.Length == 3)
                 {
-                    var deliveryTimeCalculatorRQ = DeliveryTimeCalculatorTranslator.GetDeliveryTimeCalculatorRQ(orders, valuesForTimeCalculation);
-                    
-                    var deliveryTimeCalculatorRS = new DeliveryTimeCalculator().Calculate(deliveryTimeCalculatorRQ);
-
-                    foreach (var orderWithDeliveryTime in deliveryTimeCalculatorRS.OrdersWithDeliveryTime)
-                    {
-                        var request = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(orderWithDeliveryTime.Order, baseDeliveryCost);
-                        var deliveryCostCalculatorRS = deliveryCostCalculator.Calculate(request);
-                        DisplayDetails(deliveryCostCalculatorRS, orderWithDeliveryTime.DeliveryTime);
-                    }
+                    deliveryTimeCalculatorRQ = DeliveryTimeCalculatorTranslator.GetDeliveryTimeCalculatorRQ(orders, valuesForTimeCalculation);
                 }
                 else
                 {
@@ -55,7 +65,7 @@ namespace DeliveryCostEstimatorCLI
             {
                 Console.WriteLine("Please enter Valid Input : base_delivery_cost and no_of_packges as space seperated values.");
             }
-            Console.ReadKey();
+            return deliveryTimeCalculatorRQ;
         }
 
         private static void DisplayDetails(DeliveryCostCalculatorRS response, double deliveryTime)
