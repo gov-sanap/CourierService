@@ -4,7 +4,6 @@ using System.Text;
 
 namespace CourierService.Models
 {
-
     public class Shipment
     {
         public int Length { get; set; }
