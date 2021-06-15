@@ -1,5 +1,13 @@
 # CourierService
- Assignment from Everest Engineering
+ Assignment from Everest Engineering.
+ Attached PDF of problem statement.
+ ## Following are the points I covered in this solution
+ * Console application to calculate DeliveryCost of Package and DeliveryTime of Package.
+ * New offers can be added on the fly by using appsettings.json(This can be moved to DB once it's in place).
+ * All the weights and distance values can be of type double.
+ * Supports Discount types as both Percentage and fixed.
+ * Unit test cases are present for both delivery cost and time calculation.
+
 
 ## Instructions to Run Application
 ### 0. Change current directory to CourierService
