@@ -13,17 +13,18 @@ namespace DeliveryCostEstimatorCLI
 {
     public class Program
     {
-        private static IConfigurationRoot ConfigurationRoot;
+        private static IConfigurationRoot Configuration;
         private static IServiceProvider ServiceProvider;
         private static double _baseDeliveryCost;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Everest Engineering");
             Initialize();
             var deliveryCostCalculator = GetDeliveryCostCalculator();
 
-            var deliveryTimeCalculatorRQ = GetInputsFromUser();
-            var deliveryTimeCalculatorRS = new DeliveryTimeCalculator().Calculate(deliveryTimeCalculatorRQ);
+            var deliveryTimeCalculatorRQ = GetDeliveryTimeCalculatorRQ();
+            var deliveryTimeCalculatorRS = DeliveryTimeCalculator.Calculate(deliveryTimeCalculatorRQ);
 
             if(deliveryTimeCalculatorRS != null)
             {
@@ -37,7 +38,34 @@ namespace DeliveryCostEstimatorCLI
             Console.ReadKey();
         }
 
-        private static DeliveryTimeCalculatorRQ GetInputsFromUser()
+        public static void Initialize()
+        {
+            #region Build configuration
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .AddJsonFile("appsettings.json", false)
+                .Build();
+            #endregion
+
+            #region Dependency Injection
+            ServiceCollection serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<IConfigurationRoot>(Configuration);
+            serviceCollection.AddSingleton<IOfferStore, FileOfferStore>();
+
+            ServiceProvider = serviceCollection.BuildServiceProvider();
+            #endregion
+        }
+
+        public static DeliveryCostCalculator GetDeliveryCostCalculator()
+        {
+            double costPerKGWeight = Configuration.GetSection(Constants.ConfigurationSections.CostPerKGWeight).Get<double>();
+            double costPerKM = Configuration.GetSection(Constants.ConfigurationSections.CostPerKM).Get<double>();
+            var offerStore = ServiceProvider.GetService<IOfferStore>();
+
+            return new DeliveryCostCalculator(offerStore, costPerKGWeight, costPerKM);
+        }
+
+        private static DeliveryTimeCalculatorRQ GetDeliveryTimeCalculatorRQ()
         {
             DeliveryTimeCalculatorRQ deliveryTimeCalculatorRQ = null;
             Console.WriteLine("Enter the base_delivery_cost and no_of_packges as space seperated values.");
@@ -68,11 +96,6 @@ namespace DeliveryCostEstimatorCLI
             return deliveryTimeCalculatorRQ;
         }
 
-        private static void DisplayDetails(DeliveryCostCalculatorRS response, double deliveryTime)
-        {
-            Console.WriteLine($"{response.Order.Package.Id} {response.DiscountAmmount} {response.TotalAmmount} {deliveryTime}");
-        }
-
         private static List<Order> GetOrders(int numberOfPackages)
         {
             List<Order> orders = new List<Order>();
@@ -86,31 +109,9 @@ namespace DeliveryCostEstimatorCLI
             return orders;
         }
 
-        public static void Initialize()
+        private static void DisplayDetails(DeliveryCostCalculatorRS response, double deliveryTime)
         {
-            #region Build configuration
-            ConfigurationRoot = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-                .AddJsonFile("appsettings.json", false)
-                .Build();
-            #endregion
-
-            #region Dependency Injection
-            ServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<IConfigurationRoot>(ConfigurationRoot);
-            serviceCollection.AddSingleton<IOfferStore, FileOfferStore>();
-
-            ServiceProvider = serviceCollection.BuildServiceProvider();
-            #endregion
-        }
-
-        public static DeliveryCostCalculator GetDeliveryCostCalculator()
-        {
-            double costPerKGWeight = ConfigurationRoot.GetSection(Constants.ConfigurationSections.CostPerKGWeight).Get<double>();
-            double costPerKM = ConfigurationRoot.GetSection(Constants.ConfigurationSections.CostPerKM).Get<double>();
-            var offerStore = ServiceProvider.GetService<IOfferStore>();
-
-            return new DeliveryCostCalculator(offerStore, costPerKGWeight, costPerKM);
+            Console.WriteLine($"{response.Order.Package.Id} {response.DiscountAmmount} {response.TotalAmmount} {deliveryTime}");
         }
     }
 }

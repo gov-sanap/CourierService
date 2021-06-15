@@ -7,7 +7,7 @@ namespace CourierService.Messages
 {
     public class DeliveryTimeCalculatorRS
     {
-        public List<OrderWithDeliveryTime> OrdersWithDeliveryTime { get; set; }
+        public List<OrderWithDeliveryTime> OrdersWithDeliveryTime { get; set; } = new List<OrderWithDeliveryTime>();
     }
 
     public class OrderWithDeliveryTime
