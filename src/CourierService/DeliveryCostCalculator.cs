@@ -37,6 +37,13 @@ namespace CourierService
             return DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRS(request.Order, discountAmmount, totalAmmount);
         }
 
+        private double GetTotalDeliveryCost(Order order, double baseDeliveryCost)
+        {
+            var deliveryCost = baseDeliveryCost + (order.Package.WeightInKG * _costPerKGWeight)
+                        + (order.DistanceInKM * _costPerKM);
+            return deliveryCost;
+        }
+
         private double GetDiscountAmmount(double deliveryCost, Order order)
         {
             if (!string.IsNullOrEmpty(order.OfferCode))
@@ -48,13 +55,6 @@ namespace CourierService
                 }
             }
             return 0;
-        }
-
-        private double GetTotalDeliveryCost(Order order, double baseDeliveryCost)
-        {
-            var deliveryCost = baseDeliveryCost + (order.Package.WeightInKG * _costPerKGWeight)
-                        + (order.DistanceInKM * _costPerKM);
-            return deliveryCost;
         }
     }
 }
