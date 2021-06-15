@@ -19,23 +19,6 @@ namespace CourierService.Translator
             };
         }
 
-        public static DeliveryTimeCalculatorRS GetDeliveryTimeCalculatorRS(List<OrderWithDeliveryTime> orderWithEstimatedTimes)
-        {
-            return new DeliveryTimeCalculatorRS
-            {
-                OrdersWithDeliveryTime = orderWithEstimatedTimes
-            };
-        }
-
-        public static OrderWithDeliveryTime GetOrderWithEstimatedTime(Order order, double totalTime)
-        {
-            return new OrderWithDeliveryTime
-            {
-                Order = order,
-                DeliveryTime = totalTime
-            };
-        }
-
         public static DeliveryTimeCalculatorRQ GetDeliveryTimeCalculatorRQ(List<Order> orders, string[] valuesForTimeCalculation)
         {
             var deliveryTimeCalculatorRQ = new DeliveryTimeCalculatorRQ

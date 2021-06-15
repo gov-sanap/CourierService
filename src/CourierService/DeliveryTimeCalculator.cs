@@ -9,29 +9,27 @@ using System.Text;
 
 namespace CourierService
 {
-    public class DeliveryTimeCalculator
+    public static class DeliveryTimeCalculator
     {
-        public DeliveryTimeCalculatorRS Calculate(DeliveryTimeCalculatorRQ request)
+        public static DeliveryTimeCalculatorRS Calculate(DeliveryTimeCalculatorRQ request)
         {
-            if(request?.Orders != null)
+            var response = new DeliveryTimeCalculatorRS();
+
+            if (request?.Orders != null)
             {
-                var response = new DeliveryTimeCalculatorRS
-                {
-                    OrdersWithDeliveryTime = new List<OrderWithDeliveryTime>()
-                };
-                
+                var allRemainingOrders = GetAllOrders(request.Orders);
                 var vehiclesReturningTime = new List<double>();
                 for (int i = 0; i < request.NumberOfVehicles; i++)
                 {
                     vehiclesReturningTime.Add(0);
                 }
 
-                while (request.Orders.Any())
+                while (allRemainingOrders.Any())
                 {
                     var index = vehiclesReturningTime.IndexOf(vehiclesReturningTime.Min());
                     List<double> totalTimes = new List<double>();
 
-                    Shipment qualifiedShipment = ShipmentHelper.GetQualifiedShipment(request.Orders, request.MaxCarriableWeight);
+                    Shipment qualifiedShipment = ShipmentHelper.GetQualifiedShipment(allRemainingOrders, request.MaxCarriableWeight);
 
                     foreach (var order in qualifiedShipment.Orders)
                     {
@@ -41,18 +39,35 @@ namespace CourierService
                             DeliveryTime = vehiclesReturningTime[index] + Math.Round(order.DistanceInKM / request.MaxSpeed, 2)
                         };
                         response.OrdersWithDeliveryTime.Add(orderWithEstimatedTime);
-                        request.Orders.Remove(order);
+                        allRemainingOrders.Remove(order);
                     }
-                    qualifiedShipment.Orders.ForEach(order => request.Orders.Remove(order));
+                    qualifiedShipment.Orders.ForEach(order => allRemainingOrders.Remove(order));
                     vehiclesReturningTime[index] += 2 * Math.Round(qualifiedShipment.LongestDistance / request.MaxSpeed, 2);
                 }
 
                 response.OrdersWithDeliveryTime = (from orderWithEstimatedTime in response.OrdersWithDeliveryTime
                                                     orderby orderWithEstimatedTime.Order.Package.Id
                                                     select orderWithEstimatedTime).ToList();
-                return response;
             }
-            return null;
+            return response;
+        }
+
+        private static List<Order> GetAllOrders(List<Order> orders)
+        {
+            var allOrders = new List<Order>();
+            foreach(var order in orders)
+            {
+                allOrders.Add(new Order {
+                    DistanceInKM = order.DistanceInKM,
+                    OfferCode = order.OfferCode,
+                    Package = new Package
+                    {
+                        Id = order.Package.Id,
+                        WeightInKG = order.Package.WeightInKG
+                    }
+                });
+            }
+            return allOrders;
         }
     }
 }

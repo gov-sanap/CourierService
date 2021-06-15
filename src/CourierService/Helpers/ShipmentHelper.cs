@@ -4,25 +4,28 @@ using System.Linq;
 
 namespace CourierService.Helpers
 {
-    public static class ShipmentHelper
+    internal static class ShipmentHelper
     {
         private static List<Shipment> _shipments = new List<Shipment>();
 
-        public static Shipment GetQualifiedShipment(List<Order> orders, double maxCarriableWeight)
+        internal static Shipment GetQualifiedShipment(List<Order> orders, double maxCarriableWeight)
         {
             _shipments = new List<Shipment>();
             var useStatuses = new List<bool>();
             orders.ForEach(_ => useStatuses.Add(false));
+            
+            //Get Length of largest subset With TotalWeight LessThan MaxCarriableWeight
+            int largestSubsetSize = GetLargestSubsetSize(orders, maxCarriableWeight);
 
-            int largestSubsetSize = GetMaxSubsetLengthWithTotalWeightLessThanMaxCarriableWeight(orders, maxCarriableWeight);
+            //Add all possible shipments with orders count as largestSubsetSize 
+            //and totalWeight is less than maxcarriableWeight to _shipments.
+            AddAllShipments(orders, maxCarriableWeight, largestSubsetSize, 0, 0, useStatuses);
 
-            SubsetsOfGivenLengthWithTotalWeightsLessThanMaxWeight(orders, maxCarriableWeight, largestSubsetSize, 0, 0, useStatuses);
-
-            Shipment optimalShipment = GetShipmentWithMaxTotalWeightAndCanBeDeliveredFirst(_shipments);
+            Shipment optimalShipment = GetOptimalShipment(_shipments);
             return optimalShipment;
         }
 
-        private static int GetMaxSubsetLengthWithTotalWeightLessThanMaxCarriableWeight(List<Order> orders, double maxCarriableWeight)
+        private static int GetLargestSubsetSize(List<Order> orders, double maxCarriableWeight)
         {
             int subsetSize = 0;
             double totalWeight = 0;
@@ -41,7 +44,7 @@ namespace CourierService.Helpers
             return subsetSize;
         }
 
-        private static Shipment GetShipmentWithMaxTotalWeightAndCanBeDeliveredFirst(List<Shipment> shipments)
+        private static Shipment GetOptimalShipment(List<Shipment> shipments)
         {
             var sortedShipments = (from shipment in _shipments
                                    orderby shipment.TotalWeight descending
@@ -76,7 +79,7 @@ namespace CourierService.Helpers
             return longestDistance;
         }
 
-        private static void SubsetsOfGivenLengthWithTotalWeightsLessThanMaxWeight(List<Order> orders, double maxWeight, int sizeOfSubset, int start, int currentLength, List<bool> used)
+        private static void AddAllShipments(List<Order> orders, double maxWeight, int sizeOfSubset, int start, int currentLength, List<bool> areOrdersUsed)
         {
             if (currentLength == sizeOfSubset)
             {
@@ -84,7 +87,7 @@ namespace CourierService.Helpers
                 double totalWeight = 0;
                 for (int i = 0; i < orders.Count(); i++)
                 {
-                    if (used[i] == true)
+                    if (areOrdersUsed[i] == true)
                     {
                         orderSubset.Add(orders[i]);
                         totalWeight += orders[i].Package.WeightInKG;
@@ -104,11 +107,11 @@ namespace CourierService.Helpers
                 return;
             }
 
-            used[start] = true;
-            SubsetsOfGivenLengthWithTotalWeightsLessThanMaxWeight(orders, maxWeight, sizeOfSubset, start + 1, currentLength + 1, used);
+            areOrdersUsed[start] = true;
+            AddAllShipments(orders, maxWeight, sizeOfSubset, start + 1, currentLength + 1, areOrdersUsed);
 
-            used[start] = false;
-            SubsetsOfGivenLengthWithTotalWeightsLessThanMaxWeight(orders, maxWeight, sizeOfSubset, start + 1, currentLength, used);
+            areOrdersUsed[start] = false;
+            AddAllShipments(orders, maxWeight, sizeOfSubset, start + 1, currentLength, areOrdersUsed);
         }
     }
 }
