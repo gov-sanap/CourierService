@@ -35,14 +35,8 @@ namespace DeliveryCostEstimatorCLI
                 var valuesForTimeCalculation = Console.ReadLine().Split(' ');
                 if(valuesForTimeCalculation.Length == 3)
                 {
-                    var deliveryTimeCalculatorRQ = new DeliveryTimeCalculatorRQ
-                    {
-                        NumberOfVehicles = int.Parse(valuesForTimeCalculation[0]),
-                        MaxSpeed = double.Parse(valuesForTimeCalculation[1]),
-                        MaxCarriableWeight = double.Parse(valuesForTimeCalculation[2]),
-                        Orders = orders
-                    };
-
+                    var deliveryTimeCalculatorRQ = DeliveryTimeCalculatorTranslator.GetDeliveryTimeCalculatorRQ(orders, valuesForTimeCalculation);
+                    
                     var deliveryTimeCalculatorRS = new DeliveryTimeCalculator().Calculate(deliveryTimeCalculatorRQ);
 
                     foreach (var orderWithDeliveryTime in deliveryTimeCalculatorRS.OrdersWithDeliveryTime)
@@ -52,6 +46,14 @@ namespace DeliveryCostEstimatorCLI
                         DisplayDetails(deliveryCostCalculatorRS, orderWithDeliveryTime.DeliveryTime);
                     }
                 }
+                else
+                {
+                    Console.WriteLine("Please enter Valid Input : no_of_vehicles max_speed max_carriable_weight as space seperated values.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please enter Valid Input : base_delivery_cost and no_of_packges as space seperated values.");
             }
             Console.ReadKey();
         }

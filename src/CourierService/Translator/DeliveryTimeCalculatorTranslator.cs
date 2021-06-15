@@ -35,5 +35,17 @@ namespace CourierService.Translator
                 DeliveryTime = totalTime
             };
         }
+
+        public static DeliveryTimeCalculatorRQ GetDeliveryTimeCalculatorRQ(List<Order> orders, string[] valuesForTimeCalculation)
+        {
+            var deliveryTimeCalculatorRQ = new DeliveryTimeCalculatorRQ
+            {
+                NumberOfVehicles = int.Parse(valuesForTimeCalculation[0]),
+                MaxSpeed = double.Parse(valuesForTimeCalculation[1]),
+                MaxCarriableWeight = double.Parse(valuesForTimeCalculation[2]),
+                Orders = orders
+            };
+            return deliveryTimeCalculatorRQ;
+        }
     }
 }
