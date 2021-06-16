@@ -1,9 +1,10 @@
 # CourierService
  Assignment from Everest Engineering.
  Attached PDF of problem statement.
- ## Following are the points I covered in this solution
- * Console application to calculate DeliveryCost of Package and DeliveryTime of Package.
- * Unit test cases are present for both delivery cost and time calculation.
+ * Documentation :- https://docs.google.com/document/d/1frLpGBe7R9aybPXfVKp9mm-x8-pU9HQij0_jJwR8Ll0/edit?usp=sharing
+ ## Overview
+ * Created Console application to calculate DeliveryCost of Package and DeliveryTime of Package.
+ * Written Unit tests for both delivery cost and time calculation.
  * New offers can be added on the fly by using appsettings.json(This can be moved to DB once it's in place).
  * Supports Discount type as both Percentage and fixed.
 
