@@ -76,7 +76,7 @@ namespace DeliveryCostEstimatorCLI
                 _baseDeliveryCost = double.Parse(line1Values[0]);
                 var numberOfPackages = int.Parse(line1Values[1]);
 
-                List<Order> orders = GetOrders(numberOfPackages);
+                List<Order> orders = ReadOrders(numberOfPackages);
 
                 Console.WriteLine("Enter the no_of_vehicles max_speed max_carriable_weight as space seperated values.");
                 var valuesForTimeCalculation = Console.ReadLine().Split(' ');
@@ -96,7 +96,7 @@ namespace DeliveryCostEstimatorCLI
             return deliveryTimeCalculatorRQ;
         }
 
-        private static List<Order> GetOrders(int numberOfPackages)
+        private static List<Order> ReadOrders(int numberOfPackages)
         {
             List<Order> orders = new List<Order>();
             Console.WriteLine("Enter the package info (pkg_id pkg_weight_in_kg distance_in_km offer_code) as space seperated values.");

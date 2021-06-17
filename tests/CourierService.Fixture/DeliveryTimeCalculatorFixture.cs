@@ -12,11 +12,9 @@ namespace CourierService.Fixture
     public class DeliveryTimeCalculatorFixture
     {
         string _examplePackageId = "sampleId";
-        DeliveryTimeCalculator _deliveryTimeCalculator;
         DeliveryTimeCalculatorRQ _deliveryTimeCalculatorRQ;
         public DeliveryTimeCalculatorFixture()
         {
-            _deliveryTimeCalculator = new DeliveryTimeCalculator();
             var order = new Order
             {
                 Package = new Package
@@ -48,7 +46,7 @@ namespace CourierService.Fixture
             _deliveryTimeCalculatorRQ.MaxSpeed = 70;
             _deliveryTimeCalculatorRQ.NumberOfVehicles = 2;
 
-            var res = _deliveryTimeCalculator.Calculate(_deliveryTimeCalculatorRQ);
+            var res = DeliveryTimeCalculator.Calculate(_deliveryTimeCalculatorRQ);
 
             for(int i=0;i< n; i++)
             {
@@ -73,7 +71,7 @@ namespace CourierService.Fixture
             _deliveryTimeCalculatorRQ.MaxSpeed = 70;
             _deliveryTimeCalculatorRQ.NumberOfVehicles = 2;
 
-            var res = _deliveryTimeCalculator.Calculate(_deliveryTimeCalculatorRQ);
+            var res = DeliveryTimeCalculator.Calculate(_deliveryTimeCalculatorRQ);
 
             for (int i = 0; i < n; i++)
             {
