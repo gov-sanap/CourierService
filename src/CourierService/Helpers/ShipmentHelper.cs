@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace CourierService.Helpers
 {
-    internal static class ShipmentHelper
+    public static class ShipmentHelper
     {
         private static List<Shipment> _shipments = new List<Shipment>();
 
-        internal static Shipment GetQualifiedShipment(List<Order> orders, double maxCarriableWeight)
+        public static Shipment GetQualifiedShipment(List<Order> orders, double maxCarriableWeight)
         {
-            _shipments = new List<Shipment>();
+            _shipments.Clear();
             var useStatuses = new List<bool>();
             orders.ForEach(_ => useStatuses.Add(false));
             

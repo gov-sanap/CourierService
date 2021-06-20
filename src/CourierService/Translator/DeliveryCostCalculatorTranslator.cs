@@ -17,13 +17,13 @@ namespace CourierService.Translator
             };
         }
 
-        public static DeliveryCostCalculatorRS GetDeliveryCostCalculatorRS(Order order, double discountAmmount, double totalAmmount)
+        public static DeliveryCostCalculatorRS GetDeliveryCostCalculatorRS(Order order, double discountAmmount, double finalAmmount)
         {
             return new DeliveryCostCalculatorRS
             {
                 Order = order,
                 DiscountAmmount = discountAmmount,
-                TotalAmmount = totalAmmount
+                FinalDeliveryCost = finalAmmount
             };
         }
     }

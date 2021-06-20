@@ -1,5 +1,6 @@
 ﻿using CourierService.Contracts;
 using CourierService.Enums;
+using CourierService.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -49,8 +50,7 @@ namespace CourierService.Models
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"Invalid Rule with Key: {Key ?? ""} Operator: {Operator.ToString() ?? ""} Value: {Value ?? ""} ");
-                Console.WriteLine($"Got Exception: {ex.Message}");
+                throw new InvalidKeyException($"Invalid Rule with Key: {Key ?? ""} Operator: {Operator.ToString() ?? ""} Value: {Value ?? ""} ", ex);
             }
             return result;
         }

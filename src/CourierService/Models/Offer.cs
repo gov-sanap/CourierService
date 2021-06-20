@@ -1,4 +1,5 @@
 ﻿using CourierService.Enums;
+using CourierService.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,9 +20,14 @@ namespace CourierService.Models
 
         public double GetDiscountAmmount(double deliveryCost)
         {
+            if(Discount < 0)
+            {
+                throw new NegativeDiscountException("Discount can not be negative");
+            }
+
             if (DiscountType.Equals(DiscountType.Percentage))
             {
-                return deliveryCost * Discount / 100;
+                return Discount > 0 ? deliveryCost * Discount / 100 : 0;
             }
             else
             {

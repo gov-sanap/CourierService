@@ -1,4 +1,5 @@
-﻿using CourierService.Helpers;
+﻿using CourierService.Exceptions;
+using CourierService.Helpers;
 using CourierService.Messages;
 using CourierService.Models;
 using CourierService.Translator;
@@ -15,7 +16,7 @@ namespace CourierService
         {
             var response = new DeliveryTimeCalculatorRS();
 
-            if (request?.Orders != null)
+            if (request.IsValid())
             {
                 var allRemainingOrders = GetAllOrders(request.Orders);
                 var vehiclesReturningTime = new List<double>();
@@ -48,6 +49,10 @@ namespace CourierService
                 response.OrdersWithDeliveryTime = (from orderWithEstimatedTime in response.OrdersWithDeliveryTime
                                                     orderby orderWithEstimatedTime.Order.Package.Id
                                                     select orderWithEstimatedTime).ToList();
+            }
+            else
+            {
+                throw new InvalidRequestException("Check whether orders are provided and weight of no package is greater than maxCarriableWeight.");
             }
             return response;
         }
