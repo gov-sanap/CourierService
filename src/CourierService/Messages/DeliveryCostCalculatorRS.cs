@@ -9,6 +9,6 @@ namespace CourierService.Messages
     {
         public Order Order { get; set; }
         public double DiscountAmmount { get; set; }
-        public double TotalAmmount { get; set; }
+        public double FinalDeliveryCost { get; set; }
     }
 }

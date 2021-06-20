@@ -19,21 +19,28 @@ namespace DeliveryCostEstimatorCLI
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to Everest Engineering");
-            Initialize();
-            var deliveryCostCalculator = GetDeliveryCostCalculator();
-
-            var deliveryTimeCalculatorRQ = GetDeliveryTimeCalculatorRQ();
-            var deliveryTimeCalculatorRS = DeliveryTimeCalculator.Calculate(deliveryTimeCalculatorRQ);
-
-            if(deliveryTimeCalculatorRS != null)
+            Console.WriteLine("Welcome to Kiki's Courier Service");
+            try
             {
-                foreach (var orderWithDeliveryTime in deliveryTimeCalculatorRS.OrdersWithDeliveryTime)
+                Initialize();
+                var deliveryCostCalculator = GetDeliveryCostCalculator();
+
+                var deliveryTimeCalculatorRQ = GetDeliveryTimeCalculatorRQ();
+                var deliveryTimeCalculatorRS = DeliveryTimeCalculator.Calculate(deliveryTimeCalculatorRQ);
+
+                if (deliveryTimeCalculatorRS != null)
                 {
-                    var request = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(orderWithDeliveryTime.Order, _baseDeliveryCost);
-                    var deliveryCostCalculatorRS = deliveryCostCalculator.Calculate(request);
-                    DisplayDetails(deliveryCostCalculatorRS, orderWithDeliveryTime.DeliveryTime);
+                    foreach (var orderWithDeliveryTime in deliveryTimeCalculatorRS.OrdersWithDeliveryTime)
+                    {
+                        var request = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(orderWithDeliveryTime.Order, _baseDeliveryCost);
+                        var deliveryCostCalculatorRS = deliveryCostCalculator.Calculate(request);
+                        DisplayDetails(deliveryCostCalculatorRS, orderWithDeliveryTime.DeliveryTime);
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Got Exception : {ex.Message} \n {ex.StackTrace}");
             }
             Console.ReadKey();
         }
@@ -111,7 +118,7 @@ namespace DeliveryCostEstimatorCLI
 
         private static void DisplayDetails(DeliveryCostCalculatorRS response, double deliveryTime)
         {
-            Console.WriteLine($"{response.Order.Package.Id} {response.DiscountAmmount} {response.TotalAmmount} {deliveryTime}");
+            Console.WriteLine($"{response.Order.Package.Id} {response.DiscountAmmount} {response.FinalDeliveryCost} {deliveryTime}");
         }
     }
 }

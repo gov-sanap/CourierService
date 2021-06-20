@@ -33,29 +33,30 @@ namespace CourierService.Fixture
         }
 
         [Fact]
-        public void Calculate_Should_Return_ZeroTotalAmmount_When_No_Object_Is_Passed()
+        public void Calculate_Should_Return_ZeroTotalAmmount_When_Null_Request_Is_Passed()
         {
             _deliveryCostCalculatorRQ.Order = null;
             var response = _deliveryCostCalculator.Calculate(_deliveryCostCalculatorRQ);
 
-            Assert.Equal(0, response.TotalAmmount);
+            Assert.Equal(0, response.FinalDeliveryCost);
         }
 
         [Theory]
-        [InlineData("PKG1 5 5 OFR001", 175)]
-        [InlineData("PKG2 15 5 OFR002", 275)]
-        [InlineData("PKG3 10 100 OFR003", 665)]
-        [InlineData("PKG1 100 100 ", 1600)]
-        [InlineData("PKG1 100 100 OFR001", 1440)]
-        [InlineData("PKG2 100 100 OFR002", 1488)]
-        [InlineData("PKG3 100 100 OFR003", 1520)]
-        public void Calculate_Should_Return_TotalCost_When_offerCode_Is_Given_In_Order(string orderString, double expectedTotalCost)
+        [InlineData("PKG1 5 5 OFR001",      0,    175)]
+        [InlineData("PKG2 15 5 OFR002",     0,      275)]
+        [InlineData("PKG3 10 100 OFR003",   35,    665)]
+        [InlineData("PKG1 100 100 ",        0,     1600)]
+        [InlineData("PKG1 100 100 OFR001",  160,     1440)]
+        [InlineData("PKG2 100 100 OFR002",  112,     1488)]
+        [InlineData("PKG3 100 100 OFR003",  80,     1520)]
+        public void Calculate_Should_Return_TotalCost_When_offerCode_Is_Given_In_Order(string orderString, double expectedDiscountAmount, double expectedFinalCost)
         {
             _deliveryCostCalculatorRQ.Order = OrderTranslator.GetOrder(orderString);
 
             var response = _deliveryCostCalculator.Calculate(_deliveryCostCalculatorRQ);
             
-            Assert.Equal(expectedTotalCost, response.TotalAmmount);
+            Assert.Equal(expectedFinalCost, response.FinalDeliveryCost);
+            Assert.Equal(expectedDiscountAmount, response.DiscountAmmount);
         }
     }
 }

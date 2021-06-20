@@ -1,4 +1,5 @@
 ﻿using CourierService.Enums;
+using CourierService.Exceptions;
 using CourierService.Models;
 using CourierService.Translator;
 using System;
@@ -10,6 +11,26 @@ namespace CourierService.Fixture
 {
     public class RuleFixture
     {
+        private Order _order;
+        public RuleFixture()
+        {
+            _order = OrderTranslator.GetOrder("PKG3 175 100 OFFR003");
+        }
+
+        [Fact]
+        public void Qualify_Should_Throw_InvalidKeyException_When_Rule_Has_Invalid_Key()
+        {
+            Rule rule = new Rule()
+            {
+                Key = "Length",
+                Operator = OperatorType.LessThanEqual,
+                Value = "100"
+            };
+
+            Assert.Throws<InvalidKeyException>(()=> rule.Qualify(_order));
+        }
+
+
         [Theory]
         [InlineData("DistanceInKM", OperatorType.Equal, "123", false)]
         [InlineData("DistanceInKM", OperatorType.LessThan, "123", true)]
@@ -27,9 +48,8 @@ namespace CourierService.Fixture
                 Operator = operatorType,
                 Value = value
             };
-            var order = OrderTranslator.GetOrder("PKG3 175 100 OFFR003");
 
-            Assert.Equal(result, rule.Qualify(order));
+            Assert.Equal(result, rule.Qualify(_order));
         }
     }
 }
