@@ -16,7 +16,7 @@ namespace CourierService
         {
             var response = new DeliveryTimeCalculatorRS();
 
-            if (request.Validate())
+            if (request.IsValid())
             {
                 var allRemainingOrders = GetAllOrders(request.Orders);
                 var vehiclesReturningTime = new List<double>();

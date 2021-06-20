@@ -12,33 +12,21 @@ namespace CourierService.Fixture
     {
         string _examplePackageId = "sampleId";
         DeliveryCostCalculator _deliveryCostCalculator;
-        DeliveryCostCalculatorRQ _deliveryCostCalculatorRQ;
 
         public DeliveryCostCalculatorFixture()
         {
             Program.Initialize();
             _deliveryCostCalculator = Program.GetDeliveryCostCalculator();
-            var order = new Order
-            {
-                Package = new Package
-                {
-                    Id = _examplePackageId,
-                    WeightInKG = 40
-                },
-                DistanceInKM = 10,
-                OfferCode = "OFR001"
-            };
-            var baseDeliveryCost = 100;
-            _deliveryCostCalculatorRQ = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(order, baseDeliveryCost);
         }
 
         [Fact]
-        public void Calculate_Should_Return_ZeroTotalAmmount_When_Null_Request_Is_Passed()
+        public void Calculate_Should_Return_Zero_When_Null_Request_Is_Passed()
         {
-            _deliveryCostCalculatorRQ.Order = null;
-            var response = _deliveryCostCalculator.Calculate(_deliveryCostCalculatorRQ);
+            var deliveryCostCalculatorRQ = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(null, 100);
+            var response = _deliveryCostCalculator.Calculate(deliveryCostCalculatorRQ);
 
             Assert.Equal(0, response.FinalDeliveryCost);
+            Assert.Equal(0, response.DiscountAmmount);
         }
 
         [Theory]
@@ -51,9 +39,10 @@ namespace CourierService.Fixture
         [InlineData("PKG3 100 100 OFR003",  80,     1520)]
         public void Calculate_Should_Return_TotalCost_When_offerCode_Is_Given_In_Order(string orderString, double expectedDiscountAmount, double expectedFinalCost)
         {
-            _deliveryCostCalculatorRQ.Order = OrderTranslator.GetOrder(orderString);
+            var order = OrderTranslator.GetOrder(orderString);
+            var deliveryCostCalculatorRQ = DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRQ(order, 100);
 
-            var response = _deliveryCostCalculator.Calculate(_deliveryCostCalculatorRQ);
+            var response = _deliveryCostCalculator.Calculate(deliveryCostCalculatorRQ);
             
             Assert.Equal(expectedFinalCost, response.FinalDeliveryCost);
             Assert.Equal(expectedDiscountAmount, response.DiscountAmmount);

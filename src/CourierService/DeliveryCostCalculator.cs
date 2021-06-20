@@ -28,16 +28,16 @@ namespace CourierService
                 return DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRS(request.Order, 0, 0);
             }
 
-            var totalDeliveryCost = GetTotalDeliveryCost(request.Order, request.BaseDeliveryCost);
+            var deliveryCost = GetDeliveryCost(request.Order, request.BaseDeliveryCost);
             
-            var discountAmmount = GetDiscountAmmount(totalDeliveryCost, request.Order);
+            var discountAmmount = GetDiscountAmmount(deliveryCost, request.Order);
 
-            var finalAmmount = totalDeliveryCost - discountAmmount;
+            var finalAmmount = deliveryCost - discountAmmount;
 
             return DeliveryCostCalculatorTranslator.GetDeliveryCostCalculatorRS(request.Order, discountAmmount, finalAmmount);
         }
 
-        private double GetTotalDeliveryCost(Order order, double baseDeliveryCost)
+        private double GetDeliveryCost(Order order, double baseDeliveryCost)
         {
             var deliveryCost = baseDeliveryCost + (order.Package.WeightInKG * _costPerKGWeight)
                         + (order.DistanceInKM * _costPerKM);

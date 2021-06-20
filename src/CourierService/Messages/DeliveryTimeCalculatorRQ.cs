@@ -13,13 +13,9 @@ namespace CourierService.Messages
         public double MaxSpeed { get; set; }
         public double MaxCarriableWeight { get; set; }
 
-        internal bool Validate()
+        internal bool IsValid()
         {
-            if(Orders!= null && Orders.Any() && Orders.TrueForAll(order => order.Package.WeightInKG < MaxCarriableWeight))
-            {
-                return true;
-            }
-            return false;
+            return (Orders != null && Orders.Any() && Orders.TrueForAll(order => order.Package.WeightInKG < MaxCarriableWeight));
         }
     }
 }
