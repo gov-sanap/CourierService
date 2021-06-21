@@ -37,7 +37,7 @@ namespace CourierService
                         var orderWithEstimatedTime = new OrderWithDeliveryTime
                         {
                             Order = order,
-                            DeliveryTime = vehiclesReturningTime[index] + Math.Round(order.DistanceInKM / request.MaxSpeed, 2)
+                            DeliveryTime = Math.Round(vehiclesReturningTime[index] + (order.DistanceInKM / request.MaxSpeed), 2)
                         };
                         response.OrdersWithDeliveryTime.Add(orderWithEstimatedTime);
                         allRemainingOrders.Remove(order);
